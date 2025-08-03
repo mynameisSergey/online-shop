@@ -20,5 +20,6 @@ public class WebConfiguration {
     public CartDto cart() {
         log.info("Initialize cart");
         return new CartDto();
+
     }
 }
