@@ -3,6 +3,7 @@ package com.example.online_shop.service;
 import com.example.online_shop.enumiration.ECartAction;
 import com.example.online_shop.enumiration.ESort;
 import com.example.online_shop.mapper.ItemMapper;
+import com.example.online_shop.model.dto.ItemCreateDto;
 import com.example.online_shop.model.dto.ItemDto;
 import com.example.online_shop.model.dto.ItemsWithPagingDto;
 import com.example.online_shop.model.dto.PagingParametersDto;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -88,4 +90,12 @@ public class ItemService {
         return item;
     }
 
+    public byte[] getImage(Long id) {
+        return itemRepository.findById(id).orElse(new Item()).getImage();
+    }
+
+    @Transactional
+    public ItemDto saveItem(ItemCreateDto item) {
+        return itemMapper.toDto(itemRepository.save(itemMapper.toItem(item)));
+    }
 }

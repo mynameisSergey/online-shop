@@ -1,16 +1,16 @@
 package com.example.online_shop.controller;
 
 import com.example.online_shop.model.dto.CartDto;
+import com.example.online_shop.model.dto.ItemCreateDto;
+import com.example.online_shop.model.dto.ItemDto;
 import com.example.online_shop.model.dto.ItemsWithPagingDto;
 import com.example.online_shop.service.CartService;
 import com.example.online_shop.service.ItemService;
+import com.example.online_shop.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -66,7 +66,7 @@ public class ShopController {
     /**
      * POST "/main/items/{id}" - изменить количество товара в корзине
      *
-     * @param id товара
+     * @param id     товара
      * @param action значение из перечисления PLUS|MINUS|DELETE (добавить товар, удалить один товар, удалить товар из корзины)
      * @return редирект на "/main/items"
      */
@@ -98,7 +98,7 @@ public class ShopController {
     /**
      * POST "/cart/items/{id}" - изменить количество товара в корзине
      *
-     * @param id товара
+     * @param id     товара
      * @param action значение из перечисления PLUS|MINUS|DELETE (PLUS - добавить один товар, MINUS - удалить один товар,
      *               DELETE - удалить товар из корзины)
      * @return "redirect:/cart/items"
@@ -114,7 +114,7 @@ public class ShopController {
     /**
      * DET "/items/{id}" - карточка товара
      *
-     * @param id товара
+     * @param id    товара
      * @param model "item" товар(id, title, description, imgPath, count, price)
      * @return "item"
      */
@@ -126,7 +126,8 @@ public class ShopController {
 
     /**
      * POST "/items/{id}" - изменить количество товара в корзине
-     * @param id товара
+     *
+     * @param id     товара
      * @param action значение из перечисления PLUS|MINUS|DELETE (PLUS - добавить один товар, MINUS - удалить один товар, DELETE - удалить товар из корзины)
      * @return "redirect:/items/"
      */
@@ -135,6 +136,81 @@ public class ShopController {
                                    @RequestParam(name = "action") String action) {
         itemService.actionWithItemInCart(id, action);
         return "redirect:/items/" + id;
+    }
+
+    /**
+     * POST "/buy" - купить товары в корзине (выполняет покупку товаров в корзине и очищает ее)
+     *
+     * @return редирект на "/orders/{id}?newOrder=true"
+     */
+    @PostMapping("/buy")
+    public String buy() {
+        Long orderId = orderService.buy();
+        return "redirect:/orders/" + orderId + "?newOrder=true";
+    }
+
+    /**
+     * DET "/orders" - список заказов
+     *
+     * @param model "orders" -List<Order> - список заказов:
+     *              "id" - идентификатор заказа
+     *              "items" - List<Item> - список товаров в заказе (id, title, description, imgPatg, count, price)
+     * @return "orders.html"
+     */
+    @GetMapping("/orders")
+    public String getOrders(Model model) {
+        model.addAttribute("orders", orderService.getOrders());
+        return "orders";
+    }
+
+    /**
+     * GET "/orders/{id}" - карточка заказа
+     *
+     * @param model    "order" - заказ, "items" - List<Item> - список товаров в заказе (id, title, description, imgPath, count, price)
+     * @param id       идентификатор заказа
+     * @param newOrder true, если переход со страницы оформления заказа (по умолчанию, false)
+     * @return "order.html"
+     */
+    @GetMapping("/orders/{id}")
+    public String getOrder(Model model, @PathVariable("id") Long id,
+                           @RequestParam(name = "newOrder", defaultValue = "false") boolean newOrder) {
+        model.addAttribute("newOrder", newOrder);
+        model.addAttribute("order", orderService.getOrderById(id));
+        return "order";
+    }
+
+    /**
+     * GET "/items/image/{id}" - эндпоинт, возвращающий набор байт картинки поста
+     *
+     * @param id идентификатор товара
+     * @return картинка в байтах
+     */
+    @GetMapping("/items/image/{id}")
+    @ResponseBody
+    public byte[] getImage(@PathVariable("id") Long id) {
+        return itemService.getImage(id);
+    }
+
+    /**
+     * GET "/main/items/add" - страница добавления товара
+     *
+     * @return "add-item.html"
+     */
+    @GetMapping("/main/items/add")
+    public String addItemPage() {
+        return "add-item";
+    }
+
+    /**
+     * POST "/main/items" - добавление товара
+     * @param item "multipart/form-data"
+     * @return редирект на "/items/{id}"
+     */
+
+    @PostMapping("/main/items")
+    public String addItem(@ModelAttribute("item")ItemCreateDto item) {
+        ItemDto itemDto = itemService.saveItem(item);
+        return "redirect:/items/" + itemDto.getId();
     }
 }
 
