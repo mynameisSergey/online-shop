@@ -82,7 +82,7 @@ public class ShopController {
      *
      * @param model "items" - List<Item> - список товаров в корзине (id, title, description, imgPath, count, price)
      *              "total" - суммарная стоимость заказа
-     *              "empty" - trueб если в корзину не добавлен ни один товар
+     *              "empty" - true если в корзину не добавлен ни один товар
      * @return шаблон "cart.html"
      */
     @GetMapping("/cart/items")
@@ -112,7 +112,7 @@ public class ShopController {
     }
 
     /**
-     * DET "/items/{id}" - карточка товара
+     * GET "/items/{id}" - карточка товара
      *
      * @param id    товара
      * @param model "item" товар(id, title, description, imgPath, count, price)
@@ -150,11 +150,9 @@ public class ShopController {
     }
 
     /**
-     * DET "/orders" - список заказов
+     * GET "/orders" - список заказов
      *
      * @param model "orders" -List<Order> - список заказов:
-     *              "id" - идентификатор заказа
-     *              "items" - List<Item> - список товаров в заказе (id, title, description, imgPatg, count, price)
      * @return "orders.html"
      */
     @GetMapping("/orders")
@@ -206,12 +204,9 @@ public class ShopController {
      * @param item "multipart/form-data"
      * @return редирект на "/items/{id}"
      */
-
     @PostMapping("/main/items")
     public String addItem(@ModelAttribute("item")ItemCreateDto item) {
         ItemDto itemDto = itemService.saveItem(item);
         return "redirect:/items/" + itemDto.getId();
     }
 }
-
-
