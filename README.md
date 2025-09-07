@@ -44,7 +44,7 @@
 
 ✏️ Для разработчика
 
-⦁ Технологический стек: Java 21, Spring Boot(Web, Data JPA, Data JDBC, Thymeleaf, Validation), Liquibase, ModelMapper, PostgreSQL, Lombok, JUnit5, Mockito, Maven
+⦁ Технологический стек: Java 21, Spring Boot(Web, Data JPA, Data JDBC, Thymeleaf, Validation), Liquibase, ModelMapper, PostgreSQL, Lombok, JUnit5, Mockito, Maven, Docker
 ⦁ Яркое разделение модулей по страницам и сервисам
 ⦁ Конфигурируемая загрузка товаров (из файла, интерфейс)
 ⦁ ✨ Чистый, современный фронт на HTML + JS
