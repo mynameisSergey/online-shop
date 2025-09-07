@@ -22,5 +22,4 @@ public class OrderItemDetailDto {
     private BigDecimal price = BigDecimal.valueOf(0);
     @Builder.Default
     private BigDecimal totalSum = BigDecimal.valueOf(0);
-
 }
