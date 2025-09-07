@@ -7,12 +7,8 @@ import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
 @EnableConfigurationProperties(RequestLoggerProperties.class)
-@ConditionalOnProperty(
-        prefix = "online-shop.http.logging",
-        value = "enabled",
-        havingValue = "true",
-        matchIfMissing = true
-)
+@ConditionalOnProperty(prefix = "online-shop.http.logging",
+        value = "enabled", havingValue = "true", matchIfMissing = true)
 public class RequestLoggerAutoConfiguration {
     @Bean
     public RequestLoggerFilter httpLogger(RequestLoggerProperties properties) {
