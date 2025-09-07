@@ -54,6 +54,7 @@ public class IntegrationTests extends OnlineShopApplicationTests {
         }
     }
 
+
     @ParameterizedTest
     @ValueSource(strings = {"", "Товар №1"})
     void testGetItemsCheckSearch(String search) throws Exception {
